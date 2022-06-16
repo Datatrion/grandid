@@ -80,7 +80,7 @@ class GrandIDClient(object):
         raise NotImplementedError()
 
     def collect(self, sessionId: str):
-        self._get_session(sessionId)
+        return self._get_session(sessionId)
 
     def logout(self, sessionId: str):
         response = self._get(self._federatedlogin_endpoint, params={"sessionId": sessionId})
