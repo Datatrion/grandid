@@ -65,7 +65,7 @@ class GrandIDClient(object):
             raise get_error_class(response)
 
     def _get_session(self, sessionId: str):
-        response = self._get(self._federatedlogin_endpoint, params={"sessionId": sessionId})
+        response = self._get(self._getsession_endpoint, params={"sessionId": sessionId})
 
         if response.status_code == 200:
             return response.json()

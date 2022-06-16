@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 # noinspection PyPackageRequirements
 setup(
     name='grandid',
-    version='0.1.2',
+    version='0.1.3',
     description='GrandID Client',
     author='Datatrion AB',
     author_email='info@datatrion.se',
