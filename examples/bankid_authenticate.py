@@ -26,11 +26,12 @@ logging.config.dictConfig(
 logger = logging.getLogger(__name__)
 
 APIKEY = ""
-authenticateservicekey = ""
+AUTHENTICATESERVICEKEY = ""
 
-client = BankIDClient(APIKEY, authenticateservicekey)
+client = BankIDClient(APIKEY, AUTHENTICATESERVICEKEY)
 
-response = client.authenticate(personalNumber="191212121212", gui=False)
+response = client.authenticate(personalNumber="", gui=False)
+logger.debug(response)
 sessionId = response["sessionId"]
 logger.debug(sessionId)
 
@@ -40,7 +41,3 @@ for i in range(1, 10):
     logger.debug(response)
     if "sessionId" in response:
         break
-    if "errorObject" in response:
-        if response["errorObject"]["code"] == "BANKID_MSG":
-            if response["errorObject"]["message"]["status"] == "failed":
-                break

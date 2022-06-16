@@ -4,7 +4,7 @@ import logging
 import requests
 import six
 
-from grandid.exceptions import get_error_class
+from grandid.exceptions import get_error_class, BankIDMessagePendingError
 
 logger = logging.getLogger(__name__)
 
@@ -55,26 +55,26 @@ class GrandIDClient(object):
         logger.debug("params %s", params)
         return self.client.get(endpoint, *args, timeout=self._request_timeout, params=params, **kwargs)
 
+    def _parse_response(self, response):
+        logger.debug("response %s", response)
+        logger.debug(response.status_code)
+
+        if response.status_code == 200:
+            json = response.json()
+            if "errorObject" in json:
+                raise get_error_class(json)
+            return json
+        else:
+            raise get_error_class(response.json())
+
     def _federated_login(self, **data):
         logger.debug("data %s", data)
         response = self._post(self._federatedlogin_endpoint, data=data)
-
-        logger.debug("response %s", response)
-
-        if response.status_code == 200:
-            return response.json()
-        else:
-            raise get_error_class(response)
+        return self._parse_response(response)
 
     def _get_session(self, sessionId: str):
         response = self._get(self._getsession_endpoint, params={"sessionId": sessionId})
-
-        logger.debug("response %s", response)
-
-        if response.status_code == 200:
-            return response.json()
-        else:
-            raise get_error_class(response)
+        return self._parse_response(response)
 
     def authenticate(self, **kwargs):
         raise NotImplementedError()
@@ -86,14 +86,8 @@ class GrandIDClient(object):
         return self._get_session(sessionId)
 
     def logout(self, sessionId: str):
-        response = self._get(self._federatedlogin_endpoint, params={"sessionId": sessionId})
-
-        logger.debug("response %s", response)
-
-        if response.status_code == 200:
-            return response.json()
-        else:
-            raise get_error_class(response)
+        response = self._get(self._logout_endpoint, params={"sessionId": sessionId})
+        return self._parse_response(response)
 
     def _encode_user_data(self, user_data):
         if isinstance(user_data, six.text_type):
@@ -170,15 +164,18 @@ class BankIDClient(GrandIDClient):
             allowFingerprintSign=allowFingerprintSign,
         )
 
+    def collect(self, sessionId: str):
+        try:
+            return super().collect(sessionId)
+        except BankIDMessagePendingError as e:
+            return e.msg
+
     def logout(self, sessionId: str, cancelBankID: bool = False):
         response = self._get(
             self._federatedlogin_endpoint, params={"sessionId": sessionId, "cancelBankID": str(cancelBankID).lower()}
         )
 
-        if response.status_code == 200:
-            return response.json()
-        else:
-            raise get_error_class(response)
+        return self._parse_response(response)
 
 
 class NetiDAccsessClient(GrandIDClient):
