@@ -7,8 +7,8 @@ setup(
     author='Datatrion AB',
     author_email='info@datatrion.se',
     url='https://www.datatrion.se',
-    packages=find_packages(),
     license="MIT",
+    packages=find_packages(exclude=("tests",)),
     keywords=[],
     classifiers=[],
     install_requires=[
