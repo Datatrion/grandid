@@ -1,6 +1,5 @@
 from setuptools import setup, find_packages
 
-# noinspection PyPackageRequirements
 setup(
     name='grandid',
     version='0.1.3',
@@ -9,6 +8,7 @@ setup(
     author_email='info@datatrion.se',
     url='https://www.datatrion.se',
     packages=find_packages(),
+    license="MIT",
     keywords=[],
     classifiers=[],
     install_requires=[
