@@ -59,6 +59,8 @@ class GrandIDClient(object):
         logger.debug("data %s", data)
         response = self._post(self._federatedlogin_endpoint, data=data)
 
+        logger.debug("response %s", response)
+
         if response.status_code == 200:
             return response.json()
         else:
@@ -66,6 +68,8 @@ class GrandIDClient(object):
 
     def _get_session(self, sessionId: str):
         response = self._get(self._getsession_endpoint, params={"sessionId": sessionId})
+
+        logger.debug("response %s", response)
 
         if response.status_code == 200:
             return response.json()
@@ -83,6 +87,8 @@ class GrandIDClient(object):
 
     def logout(self, sessionId: str):
         response = self._get(self._federatedlogin_endpoint, params={"sessionId": sessionId})
+
+        logger.debug("response %s", response)
 
         if response.status_code == 200:
             return response.json()
