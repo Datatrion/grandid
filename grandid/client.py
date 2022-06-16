@@ -175,7 +175,7 @@ class BankIDClient(GrandIDClient):
             raise get_error_class(response)
 
 
-class NetIDAccsessClient(GrandIDClient):
+class NetiDAccsessClient(GrandIDClient):
     def authenticate(
             self,
             callbackUrl: str = None,

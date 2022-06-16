@@ -1,6 +1,7 @@
-from .client import BankIDClient, NetIDAccsessClient
+from .client import BankIDClient, NetiDAccsessClient, NetiDEnterpriseClient
 
 __all__ = [
     "BankIDClient",
-    "NetIDAccsessClient",
+    "NetiDAccsessClient",
+    "NetiDEnterpriseClient",
 ]
