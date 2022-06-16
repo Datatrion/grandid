@@ -37,18 +37,17 @@ class GrandIDClient(object):
             self.api_url = "https://client.grandid.com/json1.1"
 
         self.client = requests.Session()
-        self.client.headers = {"Content-Type": "application/json"}
 
         self._federatedlogin_endpoint = f"{self.api_url}/FederatedLogin"
         self._getsession_endpoint = f"{self.api_url}/GetSession"
         self._logout_endpoint = f"{self.api_url}/Logout"
 
-    def _post(self, endpoint, json, *args, **kwargs):
+    def _post(self, endpoint, data, *args, **kwargs):
         """Internal helper method for adding keys and timeout to requests."""
         params = {"apiKey": self.apikey, "authenticateServiceKey": self.authenticateservicekey}
         logger.debug("params %s", params)
-        logger.debug("json %s", json)
-        return self.client.post(endpoint, *args, timeout=self._request_timeout, params=params, json=json, **kwargs)
+        logger.debug("data %s", data)
+        return self.client.post(endpoint, *args, timeout=self._request_timeout, params=params, data=data, **kwargs)
 
     def _get(self, endpoint, params, *args, **kwargs):
         """Internal helper method for adding keys and timeout to requests."""
@@ -58,7 +57,7 @@ class GrandIDClient(object):
 
     def _federated_login(self, **data):
         logger.debug("data %s", data)
-        response = self._post(self._federatedlogin_endpoint, json=data)
+        response = self._post(self._federatedlogin_endpoint, data=data)
 
         if response.status_code == 200:
             return response.json()
