@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='grandid',
-    version='0.1.4',
+    version='0.1.5',
     description='GrandID Client',
     author='Datatrion AB',
     author_email='info@datatrion.se',

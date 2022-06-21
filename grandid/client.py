@@ -172,7 +172,8 @@ class BankIDClient(GrandIDClient):
 
     def logout(self, sessionId: str, cancelBankID: bool = False):
         response = self._get(
-            self._federatedlogin_endpoint, params={"sessionId": sessionId, "cancelBankID": str(cancelBankID).lower()}
+            self._logout_endpoint,
+            params={"sessionId": sessionId, "cancelBankID": str(cancelBankID).lower()}
         )
 
         return self._parse_response(response)
