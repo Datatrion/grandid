@@ -14,6 +14,7 @@ setup(
     install_requires=["requests", "six"],
     extras_require={
         "testing": [
+            "coverage"
             #'requests_mock',
         ],
     },
