@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 from typing import Dict
 
@@ -5,9 +6,16 @@ logger = logging.getLogger(__name__)
 
 
 def get_error_class(data):
-    errorObject = data.get("errorObject")
-    error_class = _ERROR_CODE_TO_CLASS.get(errorObject.get("code"), GrandIDError)
-    return error_class("{0}: {1}".format(errorObject.get("code"), errorObject.get("message")), errorObject)
+    errorObject = data.get("errorObject", {})
+    if not errorObject:
+        # Sometimes the exception is within grandidObject instead...
+        errorObject = data.get("grandidObject", {})
+    err_code = errorObject.get("code")
+    error_class = _ERROR_CODE_TO_CLASS.get(err_code, UnknownGrandIDError)
+    return error_class(
+        "{0}: {1}".format(err_code, errorObject.get("message", "Unknown error")),
+        errorObject,
+    )
 
 
 def get_bankid_message_error(message, data):
@@ -18,6 +26,10 @@ def get_bankid_message_error(message, data):
 
 class GrandIDError(Exception):
     """Parent exception class for all GrandID errors."""
+
+
+class UnknownGrandIDError(GrandIDError):
+    """When we get an error that shouldn't exist according to docs."""
 
 
 class GrandIDWarning(Warning):
