@@ -18,10 +18,25 @@ def get_error_class(data):
     )
 
 
-def get_bankid_message_error(message, data):
+def get_bankid_message_error(message: str, data: Dict) -> BankIDMessageError:
+    """
+    Try to figure out which error class to use from the more generic error messages
+    """
     msg = data.get("message")
-    error_class = _BANKID_MSG_CODE_TO_CLASS.get(msg.get("hintCode"), BankIDMessageError)
-    return error_class("{0}: {1}".format(msg.get("status"), msg.get("hintCode")), msg)
+    if isinstance(msg, str):
+        return BankIDMessageError(msg, {})  # I don't know what's safe to share here
+    elif isinstance(msg, dict):
+        error_class = _BANKID_MSG_CODE_TO_CLASS.get(
+            msg.get("hintCode"), BankIDMessageError
+        )
+        return error_class(
+            "{0}: {1}".format(msg.get("status"), msg.get("hintCode")), msg
+        )
+    else:  # pragma: no cover
+        raise ValueError(
+            "Tried to parse BankdID message, but got bogus data - message: %s / data: %s"
+            % (message, data)
+        )
 
 
 class GrandIDError(Exception):
